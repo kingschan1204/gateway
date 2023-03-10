@@ -7,9 +7,7 @@ gateway:
   routeDepth: 1
   #要路由的服务
   routes:
-    "/app/api": "http://127.0.0.1:8080"
-    "/app": "http://dev.ishubei.com:10088"
+    "/saas": "http://127.0.0.1:8080"
   #白名单
   whiteList:
-    - /app.*
-    - /.*
+    - /saas.*
