@@ -16,8 +16,8 @@ type AppConfig struct {
 	Login string `yaml:"loginUrl"`
 	// url prefix route depth
 	RouteDepth int `yaml:"routeDepth"`
-	// url prefix route
-	Route map[string]string `yaml:"routes"`
+	// key : url prefix route value : route host list
+	Route map[string][]string `yaml:"routes"`
 	// whitelist
 	WhiteList []string `yaml:"whiteList"`
 }

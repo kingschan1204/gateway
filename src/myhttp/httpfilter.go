@@ -27,7 +27,8 @@ func ProxyRequestHandler() func(http.ResponseWriter, *http.Request) {
 		isRoute, routePath, replacePath := isRoutePath(url, config.App.Route, config.App.RouteDepth)
 		if isRoute {
 			r.URL.Path = strings.Replace(r.URL.Path, replacePath, "", 1)
-			host = routePath
+			// To achieve load balancing in the future
+			host = routePath[0]
 
 		}
 		// If it is a whitelist directly through

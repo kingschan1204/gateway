@@ -7,7 +7,7 @@ gateway:
   routeDepth: 1
   #要路由的服务
   routes:
-    "/saas": "http://127.0.0.1:8080"
+    "/saas": ["http://127.0.0.1:8080","http://127.0.0.1:8081"]
   #白名单
   whiteList:
     - /saas.*

@@ -21,7 +21,7 @@ func whiteList(url string, whiteList []string) bool {
 
 // Determine whether the path is need route
 //return is route , route path , repace path prefix
-func isRoutePath(url string, route map[string]string, depth int) (bool, string, string) {
+func isRoutePath(url string, route map[string][]string, depth int) (bool, []string, string) {
 	result := strings.Split(url, "/")
 	var array []string
 	array = result[1:]
@@ -35,5 +35,5 @@ func isRoutePath(url string, route map[string]string, depth int) (bool, string, 
 	if ok {
 		return true, v, path
 	}
-	return false, "", ""
+	return false, nil, ""
 }
