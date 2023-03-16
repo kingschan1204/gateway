@@ -3,8 +3,8 @@ package myhttp
 import (
 	"encoding/json"
 	"fmt"
-	"gateway/src/config"
-	"gateway/src/plugin"
+	"gateway/config"
+	"gateway/plugin"
 	jsoniter "github.com/json-iterator/go"
 	"io/ioutil"
 	"net/http"
@@ -51,7 +51,7 @@ func LoginHandle(w http.ResponseWriter, r *http.Request) {
 	if login.Code == 200 {
 		token, err := plugin.GenToken(login.Data.Username, login.Data.Tenant, []byte(config.App.TokenSecret), config.App.TokenExpire)
 		if nil == err {
-			rd = map[string]interface{}{"token": token, "code": 200}
+			rd = map[string]interface{}{"token": token, "code1": 200}
 		}
 	}
 	json.NewEncoder(w).Encode(rd)

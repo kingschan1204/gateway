@@ -2,8 +2,8 @@ package myhttp
 
 import (
 	"fmt"
-	"gateway/src/config"
-	"gateway/src/util"
+	"gateway/config"
+	"gateway/util"
 	jsoniter "github.com/json-iterator/go"
 	"io"
 	"io/ioutil"

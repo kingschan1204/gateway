@@ -2,8 +2,8 @@ package myhttp
 
 import (
 	"fmt"
-	"gateway/src/config"
-	"gateway/src/plugin"
+	"gateway/config"
+	"gateway/plugin"
 	"io"
 	"net/http"
 	"strings"
