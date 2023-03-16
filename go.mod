@@ -3,6 +3,7 @@ module gateway
 go 1.17
 
 require (
+	github.com/golang-jwt/jwt/v4 v4.5.0
 	github.com/json-iterator/go v1.1.12
 	github.com/mojocn/base64Captcha v1.3.5
 	gopkg.in/yaml.v2 v2.4.0

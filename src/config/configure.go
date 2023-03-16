@@ -14,6 +14,10 @@ type AppConfig struct {
 	Code string `yaml:"codeUrl"`
 	// login url
 	Login string `yaml:"loginUrl"`
+	// jwt token secret
+	TokenSecret string `yaml:"tokenSecret"`
+	// jwt token Expire time .the unit is Second
+	TokenExpire string `yaml:"tokenExpire"`
 	// url prefix route depth
 	RouteDepth int `yaml:"routeDepth"`
 	// key : url prefix route value : route host list

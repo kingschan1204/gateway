@@ -3,6 +3,10 @@ gateway:
   port: 80
   codeUrl: /open/code
   loginUrl: /open/login
+  #token 密钥
+  tokenSecret: "GateWay!^*"
+  # token 过期时间 默认2小时45分钟
+  tokenExpire: 2h45m
   #路由的深度 /a 深度为1  /a/b 深度为2
   routeDepth: 1
   #要路由的服务
