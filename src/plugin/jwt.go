@@ -61,6 +61,9 @@ func GenToken(username string, tenant string, secret []byte, expireTime string) 
 // tokenString : token
 // secret :
 func ParseToken(tokenString string, secret []byte) (*TokenClaims, error) {
+	if tokenString == "" {
+		return nil, errors.New("invalid token")
+	}
 	token, err := jwt.ParseWithClaims(tokenString, &TokenClaims{}, func(token *jwt.Token) (i interface{}, err error) {
 		return secret, nil
 	})
