@@ -29,9 +29,9 @@ func NewProxy(targetHost string) (*httputil.ReverseProxy, error) {
 }
 
 func modifyRequest(req *http.Request) {
-	token := req.Header.Get("token")
-	user := TokenMap[token]
-	req.Header.Set("org", user.OrgId)
+	//token := req.Header.Get("token")
+	//user := TokenMap[token]
+	//req.Header.Set("org", user.OrgId)
 	req.Header.Set("X-Real-IP", req.RemoteAddr)
 }
 

@@ -1,6 +1,7 @@
 package myhttp
 
 import (
+	"fmt"
 	"gateway/src/config"
 	"gateway/src/plugin"
 	"io"
@@ -41,9 +42,12 @@ func ProxyRequestHandler() func(http.ResponseWriter, *http.Request) {
 				return
 			}
 			// the token is ok .so set http head data
-			r.Header.Set("X-Real-IP", r.RemoteAddr)
 			r.Header.Set("user", tokenClaims.Username)
 			r.Header.Set("tenant", tokenClaims.Tenant)
+			r.Header.Set("X-Real-IP", r.RemoteAddr)
+			r.Header.Set("Host", r.Host)
+			r.Header.Set("Origin", fmt.Sprintf("%s://%s", r.URL.Scheme, r.Host))
+			r.Header.Set("Referrer", fmt.Sprintf("%s://%s%s", r.URL.Scheme, r.Host, r.URL.RawPath))
 			//if _, ok := TokenMap[token]; token == "" || !ok {
 			//	w.Header().Set("content-type", "text/json")
 			//	io.WriteString(w, result)
