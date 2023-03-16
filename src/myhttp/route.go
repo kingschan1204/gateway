@@ -32,9 +32,6 @@ func modifyRequest(req *http.Request) {
 	token := req.Header.Get("token")
 	user := TokenMap[token]
 	req.Header.Set("org", user.OrgId)
-	req.Header.Set("account", user.UserAccount)
-	req.Header.Set("uid", user.Id)
-	req.Header.Set("type", user.UserType)
 	req.Header.Set("X-Real-IP", req.RemoteAddr)
 }
 

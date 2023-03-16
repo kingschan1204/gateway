@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"gateway/src/config"
 	"gateway/src/myhttp"
 	"log"
@@ -23,7 +22,7 @@ var banner string = `
 `
 
 func init() {
-	fmt.Println(banner)
+	//fmt.Println(banner)
 	config.InitConfig()
 }
 

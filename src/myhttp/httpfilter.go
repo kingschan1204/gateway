@@ -2,13 +2,13 @@ package myhttp
 
 import (
 	"gateway/src/config"
+	"gateway/src/plugin"
 	"io"
 	"net/http"
 	"strings"
 )
 
 var result = `{
-			  "success": false,
 			  "message": "token don't exist or has expired",
 			  "code": 401,
 			  "data": { },
@@ -34,11 +34,21 @@ func ProxyRequestHandler() func(http.ResponseWriter, *http.Request) {
 		// If it is a whitelist directly through
 		if !whiteList(url, config.App.WhiteList) {
 			// need token
-			if _, ok := TokenMap[token]; token == "" || !ok {
+			tokenClaims, err := plugin.ParseToken(token, []byte(config.App.TokenSecret))
+			if err != nil {
 				w.Header().Set("content-type", "text/json")
 				io.WriteString(w, result)
 				return
 			}
+			// the token is ok .so set http head data
+			r.Header.Set("X-Real-IP", r.RemoteAddr)
+			r.Header.Set("user", tokenClaims.Username)
+			r.Header.Set("tenant", tokenClaims.Tenant)
+			//if _, ok := TokenMap[token]; token == "" || !ok {
+			//	w.Header().Set("content-type", "text/json")
+			//	io.WriteString(w, result)
+			//	return
+			//}
 		}
 		proxy, _ := NewProxy(host)
 		proxy.ServeHTTP(w, r)

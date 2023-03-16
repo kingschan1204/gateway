@@ -6,10 +6,10 @@ import (
 	"net/http"
 )
 
-// 发送http请求
+// HttpRequest 发送http请求
 // url
 // method : GET,POST
-// json参数： payload := strings.NewReader(`{"name": "zijie"}`)
+// json参数： payload := strings.NewReader(`{"name": "xxx"}`)
 // example: Request(url, "GET", body)
 // body := strings.NewReader(`{"xxx": "xxx"}`)
 func HttpRequest(url string, method string, body io.Reader) ([]byte, error) {

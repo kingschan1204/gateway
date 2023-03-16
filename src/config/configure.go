@@ -14,6 +14,8 @@ type AppConfig struct {
 	Code string `yaml:"codeUrl"`
 	// login url
 	Login string `yaml:"loginUrl"`
+	// login api http url
+	LoginApi string `yaml:"loginApi"`
 	// jwt token secret
 	TokenSecret string `yaml:"tokenSecret"`
 	// jwt token Expire time .the unit is Second
