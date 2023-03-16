@@ -22,12 +22,17 @@ func ProxyRequestHandler(w http.ResponseWriter, r *http.Request) {
 	host := ""
 	cors(&w, r)
 
-	isRoute, routePath, replacePath := isRoutePath(url, config.App.Route, config.App.RouteDepth)
+	isRoute, route, replacePath := isRoutePath(url, config.App.Route, config.App.RouteDepth)
 	if isRoute {
-		r.URL.Path = strings.Replace(r.URL.Path, replacePath, "", 1)
+		r.Header.Set("route-path", replacePath)
+		if !route.StripPrefix {
+			r.URL.Path = strings.Replace(r.URL.Path, replacePath, "", 1)
+		}
 		// To achieve load balancing in the future
-		host = routePath[0]
+		host = route.Hosts[0]
 
+	} else {
+		w.WriteHeader(404)
 	}
 	// If it is a whitelist directly through
 	if !whiteList(url, config.App.WhiteList) {
@@ -35,7 +40,8 @@ func ProxyRequestHandler(w http.ResponseWriter, r *http.Request) {
 		tokenClaims, err := plugin.ParseToken(token, []byte(config.App.TokenSecret))
 		if err != nil {
 			w.Header().Set("content-type", "text/json")
-			w.WriteHeader(401)
+			//w.WriteHeader(401)
+			fmt.Println("401 -> ", r.URL)
 			io.WriteString(w, result)
 			return
 		}

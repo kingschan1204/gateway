@@ -1,6 +1,7 @@
 package myhttp
 
 import (
+	"gateway/config"
 	"regexp"
 	"strings"
 )
@@ -19,16 +20,20 @@ func whiteList(url string, whiteList []string) bool {
 	return exists
 }
 
-// Determine whether the path is need route
-//return is route , route path , repace path prefix
-func isRoutePath(url string, route map[string][]string, depth int) (bool, []string, string) {
-	result := strings.Split(url, "/")
-	var array []string
-	array = result[1:]
+// isRoutePath Determine whether the path is need route
+//return : 1. is route , 2. route path , 3.repace path prefix
+func isRoutePath(url string, route map[string]*config.RouteInfo, depth int) (bool, *config.RouteInfo, string) {
 	path := ""
-	for i := 0; i < depth; i++ {
-		if i < len(array) && array[i] != "" {
-			path += "/" + array[i]
+	if url == "/" {
+		path = "/"
+	} else {
+		result := strings.Split(url, "/")
+		var array []string
+		array = result[1:]
+		for i := 0; i < depth; i++ {
+			if i < len(array) && array[i] != "" {
+				path += "/" + array[i]
+			}
 		}
 	}
 	v, ok := route[path]

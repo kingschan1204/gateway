@@ -12,7 +12,20 @@ gateway:
   routeDepth: 1
   #要路由的服务
   routes:
-    "/saas": ["http://localhost:8080"]
+    "/app":
+      stripPrefix: false #是否带前缀
+      hosts: ["http://ddns.ishubei.com:10088"]
+    "/static":
+      stripPrefix: true
+      hosts: [ "http://ddns.ishubei.com:10088" ]
+    "/":
+      stripPrefix: true
+      hosts: [ "http://ddns.ishubei.com:10088" ]
+    "/api":
+      stripPrefix: false
+      hosts: [ "http://localhost:8080" ]
   #白名单
   whiteList:
-#    - /saas.*
+    - /app.*
+    - /static.*
+    - /?.*

@@ -23,9 +23,14 @@ type AppConfig struct {
 	// url prefix route depth
 	RouteDepth int `yaml:"routeDepth"`
 	// key : url prefix route value : route host list
-	Route map[string][]string `yaml:"routes"`
+	Route map[string]*RouteInfo `yaml:"routes"`
 	// whitelist
 	WhiteList []string `yaml:"whiteList"`
+}
+
+type RouteInfo struct {
+	StripPrefix bool     `yaml:"stripPrefix"`
+	Hosts       []string `yaml:"hosts"`
 }
 
 type AppYaml struct {

@@ -23,9 +23,9 @@ var banner string = `
 `
 
 func init() {
-	color.Green(banner)
+	color.Cyan(banner)
 	config.InitConfig()
-	color.Green("GateWay initialized with port(s): %s", config.App.Port)
+	color.Cyan("GateWay initialized with port(s): %s", config.App.Port)
 }
 
 func main() {
