@@ -1,7 +1,6 @@
 package myhttp
 
 import (
-	"encoding/json"
 	"fmt"
 	"gateway/config"
 	"gateway/plugin"
@@ -12,13 +11,17 @@ import (
 )
 
 func GenerateCaptchaHandler(w http.ResponseWriter, r *http.Request) {
+	if r.Method != "GET" {
+		w.WriteHeader(405)
+		return
+	}
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 	id, b64s, err := plugin.CaptchaGenerate()
 	body := map[string]interface{}{"data": b64s, "id": id, "code": 200}
 	if err != nil {
 		body = map[string]interface{}{"code": 500, "msg": err.Error()}
 	}
-	json.NewEncoder(w).Encode(body)
+	jsoniter.NewEncoder(w).Encode(body)
 }
 
 type loginResult struct {
@@ -32,13 +35,17 @@ type LoginData struct {
 }
 
 func LoginHandle(w http.ResponseWriter, r *http.Request) {
+	if r.Method != "POST" {
+		w.WriteHeader(405)
+		return
+	}
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 	body, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		fmt.Println("read body err")
 		return
 	}
-	result, err := HttpRequest(config.App.LoginApi, "GET", strings.NewReader(string(body)))
+	result, err := HttpRequest(config.App.LoginApi, "POST", strings.NewReader(string(body)))
 	if err != nil {
 		fmt.Println(err)
 		return

@@ -3,7 +3,7 @@ gateway:
   port: 80
   codeUrl: /open/code
   loginUrl: /open/login
-  loginApi: http://ddns.ishubei.com:18080/gateway-login.json
+  loginApi: http://localhost:8080/login
   #token 密钥
   tokenSecret: "GateWay!^*"
   # token 过期时间 默认2小时45分钟
@@ -12,7 +12,7 @@ gateway:
   routeDepth: 1
   #要路由的服务
   routes:
-    "/saas": ["http://ddns.ishubei.com:18080"]
+    "/saas": ["http://localhost:8080"]
   #白名单
   whiteList:
 #    - /saas.*

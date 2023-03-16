@@ -28,11 +28,8 @@ func NewProxy(targetHost string) (*httputil.ReverseProxy, error) {
 	return proxy, nil
 }
 
-func modifyRequest(req *http.Request) {
-	//token := req.Header.Get("token")
-	//user := TokenMap[token]
-	//req.Header.Set("org", user.OrgId)
-	req.Header.Set("X-Real-IP", req.RemoteAddr)
+func modifyRequest(r *http.Request) {
+	r.Header.Del("token")
 }
 
 func errorHandler() func(http.ResponseWriter, *http.Request, error) {
