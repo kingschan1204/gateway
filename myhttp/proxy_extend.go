@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"compress/gzip"
 	"fmt"
-	"github.com/fatih/color"
 	"github.com/pkg/errors"
 	"io"
 	"io/ioutil"
@@ -43,7 +42,7 @@ func modifyRequest(r *http.Request) {
 func errorHandler() func(http.ResponseWriter, *http.Request, error) {
 	return func(w http.ResponseWriter, req *http.Request, err error) {
 		w.WriteHeader(http.StatusInternalServerError)
-		fmt.Printf("Got error while modifying response: %v \n", err)
+		logProxy.Fatalf("Got error while modifying response: %v \n", err)
 		return
 	}
 }
@@ -51,12 +50,12 @@ func errorHandler() func(http.ResponseWriter, *http.Request, error) {
 func modifyResponse() func(*http.Response) error {
 	return func(res *http.Response) error {
 		if res.Request.Header.Get("router") == "host" {
-			fmt.Println("host router don't modify response .")
+			//fmt.Println("host router don't modify response .")
 			return nil
 		}
 		//resp.Header.Add("Access-Control-Allow-Origin", "*")
 		//return errors.New("response body is invalid")
-		contentType := res.Header.Get("Content-Type")
+		//contentType := res.Header.Get("Content-Type")
 		encoding := res.Header.Get("Content-Encoding")
 
 		// contentType: application/json
@@ -64,19 +63,19 @@ func modifyResponse() func(*http.Response) error {
 		// contentType: image/png
 		// contentType: text/css
 
-		fmt.Println("contentType ->", contentType)
-		fmt.Println("encoding ->", encoding)
+		//fmt.Println("contentType ->", contentType)
+		//fmt.Println("encoding ->", encoding)
 
 		switch encoding {
 		case "gzip":
 			routePrefix := res.Request.Header.Get("route-path")
 			host := res.Request.Host
-			color.Red("modify response : %s", res.Request.URL)
-			color.Red("Host : %s", host)
-			color.Red("URL : %s", res.Request.URL)
-			color.Red("route-path : %s", routePrefix)
-			color.Red("RequestURI : %s", res.Request.RequestURI)
-			fmt.Println("")
+			//color.Red("modify response : %s", res.Request.URL)
+			//color.Red("Host : %s", host)
+			//color.Red("URL : %s", res.Request.URL)
+			//color.Red("route-path : %s", routePrefix)
+			//color.Red("RequestURI : %s", res.Request.RequestURI)
+			//fmt.Println("")
 			reader, err := gzip.NewReader(res.Body)
 
 			if err != nil {

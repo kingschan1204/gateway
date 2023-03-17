@@ -75,5 +75,4 @@ func InitConfig() {
 		key := Config.PrefixRoute[i].Path
 		PrefixRouterMapping[key] = Config.PrefixRoute[i]
 	}
-	fmt.Println("init ...", HostRouterMapping)
 }
