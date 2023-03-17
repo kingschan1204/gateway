@@ -17,7 +17,7 @@ import (
 	"strings"
 )
 
-var logger = log.New(os.Stderr, "main:", log.Llongfile|log.LstdFlags)
+var logProxy = log.New(os.Stderr, "proxy:", log.Llongfile|log.LstdFlags)
 
 // NewProxy takes target host and creates a reverse proxy
 func NewProxy(targetHost string) (*httputil.ReverseProxy, error) {

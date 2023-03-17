@@ -5,10 +5,13 @@ import (
 	"gateway/app"
 	"gateway/plugin"
 	"io"
+	"log"
 	"net/http"
+	"os"
 	"strings"
 )
 
+var logHttp = log.New(os.Stderr, "http:", log.Llongfile|log.LstdFlags)
 var result = `{
 			  "message": "token don't exist or has expired",
 			  "code": 401,
@@ -41,7 +44,7 @@ func ProxyRequestHandler(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			w.Header().Set("content-type", "text/json")
 			//w.WriteHeader(401)
-			fmt.Println("401 -> ", r.URL)
+			logProxy.Println("401:", r.URL)
 			io.WriteString(w, result)
 			return
 		}
