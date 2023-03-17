@@ -8,41 +8,47 @@ import (
 )
 
 type appConfig struct {
-	// bind port
-	Port string `yaml:"port"`
-	// get validate code url
-	Code string `yaml:"codeUrl"`
-	// login url
-	Login string `yaml:"loginUrl"`
-	// login api http url
-	LoginApi string `yaml:"loginApi"`
-	// jwt token secret
-	TokenSecret string `yaml:"tokenSecret"`
-	// jwt token Expire time .the unit is Second
-	TokenExpire string `yaml:"tokenExpire"`
-	// url prefix route depth
-	RouteDepth int `yaml:"routeDepth"`
-	// key : url prefix route value : route host list
-	Route map[string]*RouteInfo `yaml:"routes"`
-	// whitelist
-	WhiteList []string `yaml:"whiteList"`
-}
+	Port        string          `yaml:"port"`        // bind port
+	Code        string          `yaml:"codeUrl"`     // get validate code url
+	Login       string          `yaml:"loginUrl"`    // login url
+	LoginApi    string          `yaml:"loginApi"`    // login api http url
+	TokenSecret string          `yaml:"tokenSecret"` // jwt token secret
+	TokenExpire string          `yaml:"tokenExpire"` // jwt token Expire time .the unit is Second
+	Svc         map[string]*svc `yaml:"service"`     // services key:service id
+	RouteDepth  int             `yaml:"routeDepth"`  // url prefix route depth
+	HostRoute   []*hostRouter   `yaml:"hostRouter"`  // host router key : host  value : service id
+	PrefixRoute []*PrefixRouter `yaml:"prefixRoute"` // prefix router - > key : url path  value : service id
+	WhiteList   []string        `yaml:"whiteList"`   // whitelist
 
-type RouteInfo struct {
-	StripPrefix bool     `yaml:"stripPrefix"`
-	Hosts       []string `yaml:"hosts"`
 }
 
 type Yaml struct {
 	App appConfig `yaml:"gateway"`
 }
 
+//define svc
+type svc struct {
+	Urls []string `yaml:"urls"` // service url
+}
+
+type hostRouter struct {
+	Host    string `yaml:"host"`
+	Service string `yaml:"service"`
+}
+
+type PrefixRouter struct {
+	Path        string `yaml:"path"`
+	StripPrefix bool   `yaml:"stripPrefix"`
+	Service     string `yaml:"service"`
+}
+
+////////////////////////////////////////////////////////
+
 var Config appConfig
 
 func InitConfig() {
 	//获取当前目录
 	//fmt.Println(os.Getwd())
-
 	filename := "./gateway.yaml"
 	y := new(Yaml)
 	yamlFile, err := ioutil.ReadFile(filename)
@@ -54,4 +60,20 @@ func InitConfig() {
 		log.Fatalf("yaml 解码失败: %v\n", err)
 	}
 	Config = y.App
+
+	// setting router mapping
+	// host mapping
+	// clean map
+	HostRouterMapping = make(map[string]string)
+	for i := 0; i < len(Config.HostRoute); i++ {
+		key := Config.HostRoute[i].Host
+		HostRouterMapping[key] = Config.HostRoute[i].Service
+	}
+	// setting prefix router
+	PrefixRouterMapping = make(map[string]*PrefixRouter)
+	for i := 0; i < len(Config.PrefixRoute); i++ {
+		key := Config.PrefixRoute[i].Path
+		PrefixRouterMapping[key] = Config.PrefixRoute[i]
+	}
+	fmt.Println("init ...", HostRouterMapping)
 }

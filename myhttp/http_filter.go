@@ -22,17 +22,34 @@ var result = `{
 func ProxyRequestHandler(w http.ResponseWriter, r *http.Request) {
 	url := r.URL.Path
 	token := r.Header.Get("token")
-	host := ""
+	routeHost := ""
 	cors(&w, r)
 
-	isRoute, route, replacePath := isRoutePath(url, app.Config.Route, app.Config.RouteDepth)
+	// host router
+	svcId, exists := app.HostRouterMapping[r.Host]
+	if exists {
+		svc, ok := app.Config.Svc[svcId]
+		if ok {
+			r.Header.Set("router", "host")
+			proxy, _ := NewProxy(svc.Urls[0])
+			proxy.ServeHTTP(w, r)
+			return
+		}
+
+	}
+
+	isRoute, prefixRoute, replacePath := isRoutePath(url, app.PrefixRouterMapping, app.Config.RouteDepth)
 	if isRoute {
-		r.Header.Set("route-path", replacePath)
-		if !route.StripPrefix {
+		r.Header.Set("prefixRoute-path", replacePath)
+		if !prefixRoute.StripPrefix {
 			r.URL.Path = strings.Replace(r.URL.Path, replacePath, "", 1)
 		}
 		// To achieve load balancing in the future
-		host = route.Hosts[0]
+		svc, ok := app.Config.Svc[prefixRoute.Service]
+		if ok {
+			routeHost = svc.Urls[0]
+		}
+		r.Header.Set("router", "prefix")
 
 	} else {
 		w.WriteHeader(404)
@@ -61,6 +78,6 @@ func ProxyRequestHandler(w http.ResponseWriter, r *http.Request) {
 		//	return
 		//}
 	}
-	proxy, _ := NewProxy(host)
+	proxy, _ := NewProxy(routeHost)
 	proxy.ServeHTTP(w, r)
 }

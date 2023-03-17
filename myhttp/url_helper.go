@@ -22,7 +22,7 @@ func whiteList(url string, whiteList []string) bool {
 
 // isRoutePath Determine whether the path is need route
 //return : 1. is route , 2. route path , 3.repace path prefix
-func isRoutePath(url string, route map[string]*app.RouteInfo, depth int) (bool, *app.RouteInfo, string) {
+func isRoutePath(url string, route map[string]*app.PrefixRouter, depth int) (bool, *app.PrefixRouter, string) {
 	path := ""
 	if url == "/" {
 		path = "/"

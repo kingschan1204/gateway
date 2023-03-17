@@ -50,6 +50,10 @@ func errorHandler() func(http.ResponseWriter, *http.Request, error) {
 
 func modifyResponse() func(*http.Response) error {
 	return func(res *http.Response) error {
+		if res.Request.Header.Get("router") == "host" {
+			fmt.Println("host router don't modify response .")
+			return nil
+		}
 		//resp.Header.Add("Access-Control-Allow-Origin", "*")
 		//return errors.New("response body is invalid")
 		contentType := res.Header.Get("Content-Type")

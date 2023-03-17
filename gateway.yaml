@@ -10,21 +10,31 @@ gateway:
   tokenExpire: 2h45m
   #路由的深度 /a 深度为1  /a/b 深度为2
   routeDepth: 1
-  #要路由的服务
-  routes:
-    "/app":
-      stripPrefix: false #是否带前缀
-      hosts: ["http://ddns.ishubei.com:10088"]
-    "/static":
-      stripPrefix: true
-      hosts: [ "http://ddns.ishubei.com:10088" ]
-    "/":
-      stripPrefix: true
-      hosts: [ "http://ddns.ishubei.com:10088" ]
-    "/api":
+  # 服务列表
+  service:
+    ishubei:
+      urls: ["http://ddns.ishubei.com:10088"]
+    api:
+      urls: ["http://ddns.ishubei.com:18080"]
+  #域名路由
+  hostRouter:
+    - host: pan.gateway.com
+      service: ishubei
+    - host: api.gateway.com
+      service: api
+  # url 前缀路由
+  prefixRoute:
+    - path: /app
       stripPrefix: false
-      hosts: [ "http://localhost:8080" ]
+      service: ishubei
+    - path: /
+      stripPrefix: true
+      service: ishubei
+    - path: /static
+      stripPrefix: true
+      service: ishubei
   #白名单
   whiteList:
     - /app.*
     - /static.*
+    - /.*
