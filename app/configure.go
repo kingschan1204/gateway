@@ -1,4 +1,4 @@
-package config
+package app
 
 import (
 	"fmt"
@@ -7,7 +7,7 @@ import (
 	"log"
 )
 
-type AppConfig struct {
+type appConfig struct {
 	// bind port
 	Port string `yaml:"port"`
 	// get validate code url
@@ -33,18 +33,18 @@ type RouteInfo struct {
 	Hosts       []string `yaml:"hosts"`
 }
 
-type AppYaml struct {
-	App AppConfig `yaml:"gateway"`
+type Yaml struct {
+	App appConfig `yaml:"gateway"`
 }
 
-var App AppConfig
+var Config appConfig
 
 func InitConfig() {
 	//获取当前目录
 	//fmt.Println(os.Getwd())
 
 	filename := "./gateway.yaml"
-	y := new(AppYaml)
+	y := new(Yaml)
 	yamlFile, err := ioutil.ReadFile(filename)
 	if err != nil {
 		fmt.Printf("read gateway.yaml file error %v\n", err)
@@ -53,5 +53,5 @@ func InitConfig() {
 	if err != nil {
 		log.Fatalf("yaml 解码失败: %v\n", err)
 	}
-	App = y.App
+	Config = y.App
 }

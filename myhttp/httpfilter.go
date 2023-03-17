@@ -2,7 +2,7 @@ package myhttp
 
 import (
 	"fmt"
-	"gateway/config"
+	"gateway/app"
 	"gateway/plugin"
 	"io"
 	"net/http"
@@ -22,7 +22,7 @@ func ProxyRequestHandler(w http.ResponseWriter, r *http.Request) {
 	host := ""
 	cors(&w, r)
 
-	isRoute, route, replacePath := isRoutePath(url, config.App.Route, config.App.RouteDepth)
+	isRoute, route, replacePath := isRoutePath(url, app.Config.Route, app.Config.RouteDepth)
 	if isRoute {
 		r.Header.Set("route-path", replacePath)
 		if !route.StripPrefix {
@@ -35,9 +35,9 @@ func ProxyRequestHandler(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(404)
 	}
 	// If it is a whitelist directly through
-	if !whiteList(url, config.App.WhiteList) {
+	if !whiteList(url, app.Config.WhiteList) {
 		// need token
-		tokenClaims, err := plugin.ParseToken(token, []byte(config.App.TokenSecret))
+		tokenClaims, err := plugin.ParseToken(token, []byte(app.Config.TokenSecret))
 		if err != nil {
 			w.Header().Set("content-type", "text/json")
 			//w.WriteHeader(401)

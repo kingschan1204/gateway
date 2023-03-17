@@ -2,7 +2,7 @@ package myhttp
 
 import (
 	"fmt"
-	"gateway/config"
+	"gateway/app"
 	"gateway/plugin"
 	jsoniter "github.com/json-iterator/go"
 	"io/ioutil"
@@ -45,7 +45,7 @@ func LoginHandle(w http.ResponseWriter, r *http.Request) {
 		fmt.Println("read body err")
 		return
 	}
-	result, err := HttpRequest(config.App.LoginApi, "POST", strings.NewReader(string(body)))
+	result, err := HttpRequest(app.Config.LoginApi, "POST", strings.NewReader(string(body)))
 	if err != nil {
 		fmt.Println(err)
 		return
@@ -56,7 +56,7 @@ func LoginHandle(w http.ResponseWriter, r *http.Request) {
 
 	rd := map[string]interface{}{"msg": "login error ", "code": 500}
 	if login.Code == 200 {
-		token, err := plugin.GenToken(login.Data.Username, login.Data.Tenant, []byte(config.App.TokenSecret), config.App.TokenExpire)
+		token, err := plugin.GenToken(login.Data.Username, login.Data.Tenant, []byte(app.Config.TokenSecret), app.Config.TokenExpire)
 		if nil == err {
 			rd = map[string]interface{}{"token": token, "code1": 200}
 		}

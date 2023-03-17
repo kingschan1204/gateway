@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"gateway/config"
+	"gateway/app"
 	"gateway/myhttp"
 	"github.com/fatih/color"
 	"log"
@@ -24,15 +24,15 @@ var banner string = `
 
 func init() {
 	color.Cyan(banner)
-	config.InitConfig()
-	color.Cyan("GateWay initialized with port(s): %s", config.App.Port)
+	app.InitConfig()
+	color.Cyan("GateWay initialized with port(s): %s", app.Config.Port)
 }
 
 func main() {
 	// handle all requests to your server using the proxy
 	http.HandleFunc("/", myhttp.ProxyRequestHandler)
-	http.HandleFunc(config.App.Login, myhttp.LoginHandle)
-	http.HandleFunc(config.App.Code, myhttp.GenerateCaptchaHandler)
+	http.HandleFunc(app.Config.Login, myhttp.LoginHandle)
+	http.HandleFunc(app.Config.Code, myhttp.GenerateCaptchaHandler)
 	//http.HandleFunc("/verify", myhttp.CaptchaVerifyHandle)
-	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%s", config.App.Port), nil))
+	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%s", app.Config.Port), nil))
 }

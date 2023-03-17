@@ -1,14 +1,14 @@
 package myhttp
 
 import (
-	"gateway/config"
+	"gateway/app"
 	"regexp"
 	"strings"
 )
 
 // Determine whether the path is a whitelist
 // url ：request url
-// whiteList：config file whitelist
+// whiteList：app file whitelist
 func whiteList(url string, whiteList []string) bool {
 	exists := false
 	for i := 0; i < len(whiteList); i++ {
@@ -22,7 +22,7 @@ func whiteList(url string, whiteList []string) bool {
 
 // isRoutePath Determine whether the path is need route
 //return : 1. is route , 2. route path , 3.repace path prefix
-func isRoutePath(url string, route map[string]*config.RouteInfo, depth int) (bool, *config.RouteInfo, string) {
+func isRoutePath(url string, route map[string]*app.RouteInfo, depth int) (bool, *app.RouteInfo, string) {
 	path := ""
 	if url == "/" {
 		path = "/"

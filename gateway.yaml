@@ -28,4 +28,3 @@ gateway:
   whiteList:
     - /app.*
     - /static.*
-    - /?.*
