@@ -3,9 +3,11 @@ package plugin
 import (
 	"github.com/mojocn/base64Captcha"
 	"image/color"
+	"time"
 )
 
-var store = base64Captcha.DefaultMemStore
+// expire time is 1 min
+var store = base64Captcha.NewMemoryStore(10240, time.Minute)
 
 // CaptchaGenerate
 func CaptchaGenerate() (id, base64 string, err error) {
