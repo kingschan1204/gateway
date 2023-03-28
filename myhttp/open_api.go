@@ -1,6 +1,7 @@
 package myhttp
 
 import (
+	"encoding/json"
 	"fmt"
 	"gateway/app"
 	"gateway/plugin"
@@ -45,20 +46,22 @@ func LoginHandle(w http.ResponseWriter, r *http.Request) {
 		fmt.Println("read body err")
 		return
 	}
+	rd := map[string]interface{}{"msg": "login error ", "code": 500}
+
 	result, err := HttpRequest(app.Config.LoginApi, "POST", strings.NewReader(string(body)))
 	if err != nil {
 		fmt.Println(err)
-		return
-	}
-	var json = jsoniter.ConfigCompatibleWithStandardLibrary
-	var login loginResult
-	json.Unmarshal(result, &login)
+		//return
+	} else {
+		var json = jsoniter.ConfigCompatibleWithStandardLibrary
+		var login loginResult
+		json.Unmarshal(result, &login)
 
-	rd := map[string]interface{}{"msg": "login error ", "code": 500}
-	if login.Code == 200 {
-		token, err := plugin.GenToken(login.Data.Username, login.Data.Tenant, []byte(app.Config.TokenSecret), app.Config.TokenExpire)
-		if nil == err {
-			rd = map[string]interface{}{"token": token, "code1": 200}
+		if login.Code == 200 {
+			token, err := plugin.GenToken(login.Data.Username, login.Data.Tenant, []byte(app.Config.TokenSecret), app.Config.TokenExpire)
+			if nil == err {
+				rd = map[string]interface{}{"token": token, "code1": 200}
+			}
 		}
 	}
 	json.NewEncoder(w).Encode(rd)

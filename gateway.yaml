@@ -33,6 +33,12 @@ gateway:
     - path: /static
       stripPrefix: true
       service: ishubei
+    - path: /plugins
+      stripPrefix: true
+      service: ishubei
+    - path: /index.php
+      stripPrefix: true
+      service: ishubei
   #白名单
   whiteList:
     - /app.*
