@@ -16,6 +16,8 @@ gateway:
       urls: ["http://ddns.ishubei.com:10088"]
     api:
       urls: ["http://ddns.ishubei.com:18080"]
+    nd:
+      urls: ["http://127.0.0.1:8080"]
   #域名路由
   hostRouter:
     - host: pan.gateway.com
@@ -39,6 +41,9 @@ gateway:
     - path: /index.php
       stripPrefix: true
       service: ishubei
+    - path: /nd
+      stripPrefix: false
+      service: nd
   #白名单
   whiteList:
     - /app.*

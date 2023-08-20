@@ -11,7 +11,7 @@ import (
 	"strings"
 )
 
-var logHttp = log.New(os.Stderr, "http:", log.Llongfile|log.LstdFlags)
+var logHttp = log.New(os.Stdout, "http:", log.Llongfile|log.LstdFlags)
 var result = `{
 			  "message": "token don't exist or has expired",
 			  "code": 401,

@@ -16,7 +16,7 @@ import (
 	"strings"
 )
 
-var logProxy = log.New(os.Stderr, "proxy:", log.Llongfile|log.LstdFlags)
+var logProxy = log.New(os.Stdout, "proxy:", log.Llongfile|log.LstdFlags)
 
 // NewProxy takes target host and creates a reverse proxy
 func NewProxy(targetHost string) (*httputil.ReverseProxy, error) {
@@ -37,12 +37,13 @@ func NewProxy(targetHost string) (*httputil.ReverseProxy, error) {
 
 func modifyRequest(r *http.Request) {
 	r.Header.Del("token")
+	logProxy.Println("路由:", r.URL)
 }
 
 func errorHandler() func(http.ResponseWriter, *http.Request, error) {
 	return func(w http.ResponseWriter, req *http.Request, err error) {
 		w.WriteHeader(http.StatusInternalServerError)
-		logProxy.Fatalf("Got error while modifying response: %v \n", err)
+		//logProxy.Fatalf("Got error while modifying response: %v \n", err)
 		return
 	}
 }
@@ -55,7 +56,7 @@ func modifyResponse() func(*http.Response) error {
 		}
 		//resp.Header.Add("Access-Control-Allow-Origin", "*")
 		//return errors.New("response body is invalid")
-		//contentType := res.Header.Get("Content-Type")
+		contentType := res.Header.Get("Content-Type")
 		encoding := res.Header.Get("Content-Encoding")
 
 		// contentType: application/json
@@ -63,8 +64,19 @@ func modifyResponse() func(*http.Response) error {
 		// contentType: image/png
 		// contentType: text/css
 
-		//fmt.Println("contentType ->", contentType)
-		//fmt.Println("encoding ->", encoding)
+		logProxy.Println("Response contentType ->", contentType)
+		logProxy.Println("Response encoding ->", encoding)
+		logProxy.Println("Response StatusCode ->", res.StatusCode)
+
+		if res.StatusCode == 400 {
+			var result = `
+				{
+				  "message": "bad request",
+				  "code": 400,
+				}
+				`
+			res.Body = io.NopCloser(bytes.NewReader([]byte(result)))
+		}
 
 		switch encoding {
 		case "gzip":
