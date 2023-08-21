@@ -3,6 +3,7 @@ package myhttp
 import (
 	"bytes"
 	"compress/gzip"
+	"encoding/json"
 	"fmt"
 	"github.com/pkg/errors"
 	"io"
@@ -45,14 +46,9 @@ func errorHandler() func(http.ResponseWriter, *http.Request, error) {
 		w.Header().Set("content-type", "text/json")
 		w.WriteHeader(http.StatusInternalServerError)
 		logProxy.Println("Got error while modifying response:  \n", err)
-		var result = `
-				{
-				  "message": "{msg}",
-				  "code": 500,
-				}
-				`
-		result = strings.Replace(result, "{msg}", err.Error(), 1)
-		io.WriteString(w, result)
+		result := map[string]interface{}{"message": err.Error(), "code": 500}
+		jsonData, _ := json.Marshal(result)
+		io.WriteString(w, string(jsonData))
 		return
 	}
 }
@@ -78,13 +74,15 @@ func modifyResponse() func(*http.Response) error {
 		logProxy.Println("Response StatusCode ->", res.StatusCode)
 
 		if res.StatusCode == 400 {
-			var result = `
-				{
-				  "message": "bad request",
-				  "code": 400,
-				}
-				`
-			res.Body = io.NopCloser(bytes.NewReader([]byte(result)))
+			result := map[string]interface{}{"message": "bad request ", "code": 400}
+			jsonData, _ := json.Marshal(result)
+			res.Body = io.NopCloser(bytes.NewReader(jsonData))
+			return nil
+		}
+		if res.StatusCode == 404 {
+			result := map[string]interface{}{"message": "Not Found ", "code": 404}
+			jsonData, _ := json.Marshal(result)
+			res.Body = io.NopCloser(bytes.NewReader(jsonData))
 			return nil
 		}
 
