@@ -42,8 +42,17 @@ func modifyRequest(r *http.Request) {
 
 func errorHandler() func(http.ResponseWriter, *http.Request, error) {
 	return func(w http.ResponseWriter, req *http.Request, err error) {
+		w.Header().Set("content-type", "text/json")
 		w.WriteHeader(http.StatusInternalServerError)
-		//logProxy.Fatalf("Got error while modifying response: %v \n", err)
+		logProxy.Println("Got error while modifying response:  \n", err)
+		var result = `
+				{
+				  "message": "{msg}",
+				  "code": 500,
+				}
+				`
+		result = strings.Replace(result, "{msg}", err.Error(), 1)
+		io.WriteString(w, result)
 		return
 	}
 }
@@ -76,6 +85,7 @@ func modifyResponse() func(*http.Response) error {
 				}
 				`
 			res.Body = io.NopCloser(bytes.NewReader([]byte(result)))
+			return nil
 		}
 
 		switch encoding {
